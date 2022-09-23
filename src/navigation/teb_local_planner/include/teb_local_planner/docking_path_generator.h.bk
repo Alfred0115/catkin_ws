@@ -1,0 +1,50 @@
+#ifndef DOCKING_PATH_GENERATOR_H_
+#define DOCKING_PATH_GENERATOR_H_
+
+#include <nav_core/base_local_planner.h>
+#include <apriltag_ros/AprilTagDetectionArray.h>
+#include <std_msgs/Bool.h>
+#include <nav_msgs/Odometry.h>
+#include <nav_msgs/Path.h>
+#include <teb_local_planner/teb_local_planner_ros.h>
+//#include <teb_local_planner/track_trajectory.h>
+
+//using namespace teb_local_planner;
+
+class DockingPathGenerator
+{
+public:
+    DockingPathGenerator();
+    void init();
+    void pathGenerator();
+
+    bool ready_docking;
+    bool goal_reached;
+    ros::Time current_time;
+    ~DockingPathGenerator();
+
+private:
+    void updateRobotPose(const nav_msgs::Odometry::ConstPtr &msg);
+    double getYaw(geometry_msgs::Pose &msg);
+    void tag_pose_cb(const apriltag_ros::AprilTagDetectionArray::ConstPtr &tag_msgs);
+    void docking_prepared_cb(const std_msgs::Bool &msg);
+    void publish_path(std::vector<geometry_msgs::PoseStamped> &input);
+    std::vector<geometry_msgs::PoseStamped> adjust_path(std::vector<geometry_msgs::PoseStamped> &input);
+    ros::Subscriber tag_msgs_sub_;
+    ros::Subscriber docking_prepared_sub_;
+    ros::Subscriber odom_sub;
+    std::string tag_topic, docking_topic, robot_frame, goal_frame, odom_topic;
+    bool docking_prepared;
+    tf::TransformListener tf;
+    geometry_msgs::PoseStamped goal_local_pose;
+    double efficient_docking_dis;
+    bool allowable_distance, legal_tag_info, robot_ready;
+    double rx, ry, rt, rqz, rqw;
+    ros::Publisher path_pub;
+    std::vector<geometry_msgs::PoseStamped> docking_path;
+    std::vector<geometry_msgs::PoseStamped> local_path;
+    //TrackTrajectory *trackTrajectory_;
+    
+};
+
+#endif

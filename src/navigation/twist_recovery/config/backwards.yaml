@@ -1,0 +1,8 @@
+# Configuration for version of this recovery where we back up slowly about half a meter
+linear_x: 0.0   #-0.2
+linear_y: 0.0
+angular_z: 0.0
+duration: 1.0                #1.5
+detect_distance: 100.0     #rolling window width  /cm
+scan_topic: "/scan"
+plan_time: 0.5     #规划时间阈值，小于该值则认为此规划无效，因为乘以速度可推测向后的移动距离非常短，不能够脱困

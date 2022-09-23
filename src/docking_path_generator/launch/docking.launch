@@ -1,0 +1,16 @@
+<launch>
+	<node pkg="docking_path_generator" type="docking_path_generator" name="docking_path_generator" output="screen">
+           <param name="velocity"              value="-0.15"/>
+           <param name="robot_topic"           value="/odom_ekf" />
+           <param name="goal_topic"            value="/tag_detections" />
+           <param name="output_vel_topic"      value="/amr/cmd_vel_ctrl"/>
+           <param name="stop_distance"         value="0.85" />
+           <param name="yaw_deviation"            value="0.002" />   <!--0.0015--> <!-- letf plus, right minus -->
+           <param name="y_deviation"             value="-0.018" />  <!--0.013-->   <!-- letf minus, right plus--> 
+           <param name="yaw_accurancy"         value="0.005"  /> 
+           <param name="max_angular_speed"     value="0.1" />   <!--0.15-->
+           <param name="k1"                    value="0.7" />   <!-- 1.5/ 0.5 -->  
+           <param name="k2"                    value="0.7" />   <!-- 1.0/ 0.35 -->
+           <param name="k3"                    value="0.7" />   <!-- 0.0/ 0.35 -->
+        </node>
+</launch>

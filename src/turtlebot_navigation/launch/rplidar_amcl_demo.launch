@@ -1,0 +1,27 @@
+<launch>
+
+  <!--启动irobot机器人--> 
+  <include file="$(find turtlebot_bringup)/launch/minimal.launch"/>
+
+  <!-- 启动rplidar雷达驱动 -->
+  <arg name="laser_type" default="rplidar" />
+  <include file="$(find turtlebot_navigation)/laser/driver/rplidar_laser.launch" />
+
+
+  <!-- Run the map server -->
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find turtlebot_navigation)/maps/test_map.yaml" />
+
+  <!-- AMCL -->
+  <include file="$(find turtlebot_navigation)/launch/includes/amcl/$(arg laser_type)_amcl.launch.xml"/>
+
+  <!-- Move base -->
+  <arg name="custom_param_file" default="$(find turtlebot_navigation)/param/$(arg laser_type)_costmap_params.yaml"/>
+  <include file="$(find turtlebot_navigation)/launch/includes/move_base.launch.xml">
+    <arg name="custom_param_file" value="$(arg custom_param_file)"/>
+  </include>
+
+<!-- View in rviz -->
+  <!--include file="$(find turtlebot_rviz_launchers)/launch/view_navigation.launch"/-->
+
+</launch>
+

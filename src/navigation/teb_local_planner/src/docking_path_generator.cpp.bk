@@ -1,0 +1,262 @@
+#include <ros/ros.h>
+#include <teb_local_planner/docking_path_generator.h>
+#include <teb_local_planner/pose_se2.h>
+
+DockingPathGenerator::DockingPathGenerator()
+{
+}
+
+void DockingPathGenerator::init()
+{
+    efficient_docking_dis = 0.8; // m
+    tag_topic = "/tag_detections";
+    docking_topic = "/move_base/TebLocalPlannerROS/docking_prepared";
+    robot_frame = "base_link";
+    odom_topic = "/odom";
+    std::string pub_path_topic = "/docking_path";
+    docking_prepared = false;
+    robot_ready = false;
+    ros::NodeHandle nh("~");
+    tag_msgs_sub_ = nh.subscribe(tag_topic, 3, &DockingPathGenerator::tag_pose_cb, this);
+    docking_prepared_sub_ = nh.subscribe(docking_topic, 1, &DockingPathGenerator::docking_prepared_cb, this);
+    odom_sub = nh.subscribe(odom_topic, 1, &DockingPathGenerator::updateRobotPose, this);
+    path_pub = nh.advertise<nav_msgs::Path>(pub_path_topic, 1);
+}
+
+void DockingPathGenerator::updateRobotPose(const nav_msgs::Odometry::ConstPtr &msg)
+{
+    rx = msg->pose.pose.position.x;
+    ry = msg->pose.pose.position.y;
+    rqz = msg->pose.pose.orientation.z;
+    rqw = msg->pose.pose.orientation.w;
+    geometry_msgs::Pose temp = msg->pose.pose;
+    rt = getYaw(temp);
+    robot_ready = true;
+}
+
+double DockingPathGenerator::getYaw(geometry_msgs::Pose &msg)
+{
+    tf::Quaternion q(
+        msg.orientation.x,
+        msg.orientation.y,
+        msg.orientation.z,
+        msg.orientation.w);
+    tf::Matrix3x3 m(q);
+    double roll, pitch, yaw;
+    m.getRPY(roll, pitch, yaw);
+    return yaw;
+}
+
+void DockingPathGenerator::pathGenerator()
+{
+    if (!robot_ready)
+    {
+        ROS_ERROR("Something is wrong with the robot base...");
+        return;
+    }
+    if (!docking_prepared || !legal_tag_info || !allowable_distance)
+    {
+        ROS_INFO("wait for prepared...");
+        return;
+    }
+    else
+    {
+        ROS_INFO("prepared! Start docking...");
+    }
+    std::string global_frame = "map";
+
+    //insert start points
+    geometry_msgs::PoseStamped robot_global_pose;
+    robot_global_pose.header.frame_id = global_frame;
+    robot_global_pose.header.stamp = current_time;
+    robot_global_pose.pose.position.x = rx;
+    robot_global_pose.pose.position.y = ry;
+    robot_global_pose.pose.orientation.z = rqz;
+    robot_global_pose.pose.orientation.w = rqw;
+
+    docking_path.clear();
+    //docking_path.header.frame_id = global_frame;
+    //docking_path.header.stamp = current_time;
+    docking_path.push_back(robot_global_pose); //start point
+
+    //transform local path into global
+
+    geometry_msgs::PoseStamped temp_pose;
+    try
+    {
+        tf.waitForTransform(global_frame, goal_local_pose.header.frame_id,
+                            current_time, ros::Duration(3));
+                            //ros::Time(0)
+        tf.transformPose(global_frame, goal_local_pose, temp_pose);
+
+        temp_pose.header.stamp = current_time;
+
+        //printf("robot goal pose frame: %s\n", temp_pose.header.frame_id.c_str());
+        //printf("robot_goal_pose x: %f, %f, %f \n", temp_pose.pose.position.x,
+        //       temp_pose.pose.position.y,
+        //       temp_pose.pose.position.z);
+        
+    }
+    catch (tf::TransformException ex)
+    {
+        ROS_WARN("Transform exception: %s", ex.what());
+    }
+
+    double dx = temp_pose.pose.position.x - robot_global_pose.pose.position.x;
+    double dy = temp_pose.pose.position.y - robot_global_pose.pose.position.y;
+
+    geometry_msgs::PoseStamped p1, p2;
+    p1 = robot_global_pose;
+    p1.pose.position.x += (0.2 * dx);
+    p1.pose.position.y += (0.8 * dy);
+    docking_path.push_back(p1);
+
+    p2 = robot_global_pose;
+    p2.pose.position.x += (0.5 * dx);
+    p2.pose.position.y += (1.0 * dy);
+    docking_path.push_back(p2);
+
+    docking_path.push_back(temp_pose); //end point
+    
+    //bezier adjust path
+    std::vector<geometry_msgs::PoseStamped> bezier_docking_path;
+    
+    bezier_docking_path = adjust_path(docking_path);
+
+    //publish path
+    publish_path(bezier_docking_path);
+
+}
+
+void DockingPathGenerator::publish_path(std::vector<geometry_msgs::PoseStamped> &input)
+{
+    nav_msgs::Path path;
+    path.header.frame_id = "map";
+    path.header.stamp = current_time;
+    for (int i = 0; i < input.size(); i ++)
+    {
+        path.poses.push_back(input[i]);
+    }
+
+    path_pub.publish(path);
+}
+
+std::vector<geometry_msgs::PoseStamped> DockingPathGenerator::adjust_path(std::vector<geometry_msgs::PoseStamped> &input)
+{
+    std::vector<geometry_msgs::PoseStamped> output;
+    double dt = 0.1;
+    geometry_msgs::PoseStamped goal_point = input[input.size() - 1];
+
+    double t = 0;
+    while (t < 1)
+    {
+        geometry_msgs::PoseStamped p;
+        double x_sum = 0.0;
+        double y_sum = 0.0;
+        int i = 0;
+        int n = input.size() - 1;
+
+    }
+
+    return input;
+    
+
+}
+
+void DockingPathGenerator::tag_pose_cb(const apriltag_ros::AprilTagDetectionArray::ConstPtr &tag_msgs)
+{
+    if (!docking_prepared)
+    {
+        return;
+    }
+    if (tag_msgs.get()->detections.size() <= 0)
+    {
+        ROS_INFO("Receive no tags info...");
+        legal_tag_info = false;
+        return;
+    }
+    else
+    {
+        legal_tag_info = true;
+    }
+
+    // goal pose transform from cam frame to robot frame
+    geometry_msgs::PoseStamped cam_goal_pose, robot_goal_pose;
+    int size = tag_msgs.get()->detections.size();
+    double distance = sqrt(pow(tag_msgs.get()->detections[size - 1].pose.pose.pose.position.z, 2) +
+                           pow(tag_msgs.get()->detections[size - 1].pose.pose.pose.position.x, 2));
+    if (distance > efficient_docking_dis)
+    {
+        ROS_DEBUG("distance too big!");
+        allowable_distance = false;
+        return;
+    }
+    else
+    {
+        allowable_distance = true;
+    }
+    cam_goal_pose.header = tag_msgs.get()->detections[size - 1].pose.header;
+    cam_goal_pose.pose = tag_msgs.get()->detections[size - 1].pose.pose.pose;
+
+    try
+    {
+        tf.waitForTransform(robot_frame, tag_msgs.get()->detections[size - 1].pose.header.frame_id,
+                            ros::Time(0), ros::Duration(3));
+        tf.transformPose(robot_frame, cam_goal_pose, robot_goal_pose);
+        robot_goal_pose.pose.position.z = 0.0;
+        robot_goal_pose.pose.position.x -= 0.2;
+        //printf("robot goal pose frame: %s\n", robot_goal_pose.header.frame_id.c_str());
+        //printf("robot_goal_pose x: %f, %f, %f \n", robot_goal_pose.pose.position.x,
+        //                                            robot_goal_pose.pose.position.y,
+        //                                            robot_goal_pose.pose.position.z);
+        goal_local_pose = robot_goal_pose;
+    }
+    catch (tf::TransformException ex)
+    {
+        ROS_WARN("Transform exception: %s", ex.what());
+    }
+    //goal reached
+    double dis = sqrt(pow(robot_goal_pose.pose.position.x, 2)+ pow(robot_goal_pose.pose.position.y, 2));
+    if (dis < 0.01)
+    {
+        goal_reached = true;
+    }
+
+    return;
+}
+
+void DockingPathGenerator::docking_prepared_cb(const std_msgs::Bool &msg)
+{
+    //printf("docking prepared: %d\n", msg.data);
+    if (msg.data)
+    {
+        docking_prepared = true;
+    }
+    else
+    {
+        docking_prepared = false;
+        docking_path.clear();
+    }
+}
+
+int main(int argc, char **argv)
+{
+    ros::init(argc, argv, "docking_path_genetor");
+    
+    
+    DockingPathGenerator *docking_planner = new DockingPathGenerator();
+    docking_planner->init();
+
+    ros::Rate rate(5); //5hz
+
+    while (ros::ok())
+    {
+        docking_planner->current_time = ros::Time::now();
+        ros::spinOnce();
+        docking_planner->pathGenerator();
+
+        rate.sleep();
+    }
+
+    return 0;
+}

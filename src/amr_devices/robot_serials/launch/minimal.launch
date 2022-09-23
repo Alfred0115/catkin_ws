@@ -1,0 +1,20 @@
+<launch>
+  <arg name="laser_type" default="rplidar" />
+
+  <include file="$(find amr_desc)/launch/display.launch" />
+  <!--include file="$(find realsense2_camera)/launch/rs_camera.launch" /-->
+  <!--include file="$(find astra_camera)/launch/DabaiPro.launch" /-->
+  <include file="$(find pepperl_fuchs_r2000)/launch/r2000.launch" />
+  <!--include file="$(find sdkeli_ls_udp)/launch/keli_lidar.launch" /-->
+
+  <node pkg="robot_serials" type="robot_serials_node" name="amr_robot_serials_node" output="screen"/>
+  <node pkg="amr_joystick" type="node" name="amr_joystick_node" output="screen">
+     <remap from="/joy/raw_cmd_vel" to="/mobile_base/commands/velocity"/>
+  </node>
+  <node pkg="amr_imu" type="amr_imu_node" name="amr_imu_node" output="screen"/>
+  <node pkg="joy" type="joy_node" name="amr_joy_node" output="screen"/>
+
+  <node pkg="tf" type="static_transform_publisher" name="imu_tf_broadcaster" args="0 -0.07 0.4 -1.5707963 0 0 base_link amr_imu 100" />
+
+</launch>
+

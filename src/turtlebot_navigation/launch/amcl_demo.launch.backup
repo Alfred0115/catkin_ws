@@ -1,0 +1,35 @@
+<launch>
+  <!-- Define laser type-->
+  <arg name="laser_type" default="rplidar" />
+
+  <node pkg="robot_serials" type="robot_serials_node" name="amr_robot_serials_node" output="screen">
+  </node>
+
+  <!-- laser driver -->
+  <!--include file="$(find turtlebot_navigation)/laser/driver/$(arg laser_type)_laser.launch" /-->
+  <include file="$(find turtlebot_navigation)/laser/driver/urg_laser.launch" />
+
+  <!-- Map server -->
+  <arg name="map_file" default="/home/maxtang/catkin_amr/src/amr/maps/syx887766/nav/bq_cartomap004.yaml"/>
+  <!--node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" /-->
+  <!--node pkg="amr" type="amr_map_server2.py" name="amr_map_server" output="screen"/-->
+
+  <!-- AMCL -->
+  <arg name="custom_amcl_launch_file" default="$(find turtlebot_navigation)/launch/includes/amcl/$(arg laser_type)_amcl.launch.xml"/>
+  <arg name="initial_pose_x" default="0.0"/> <!-- Use 17.0 for willow's map in simulation -->
+  <arg name="initial_pose_y" default="0.0"/> <!-- Use 17.0 for willow's map in simulation -->
+  <arg name="initial_pose_a" default="0.0"/>
+  <include file="$(arg custom_amcl_launch_file)">
+    <arg name="initial_pose_x" value="$(arg initial_pose_x)"/>
+    <arg name="initial_pose_y" value="$(arg initial_pose_y)"/>
+    <arg name="initial_pose_a" value="$(arg initial_pose_a)"/>
+  </include>
+
+  <!-- Move base -->
+  <arg name="custom_param_file" default="$(find turtlebot_navigation)/param/$(arg laser_type)_costmap_params.yaml"/>
+  <include file="$(find turtlebot_navigation)/launch/includes/rplidar_move_base.launch.xml">
+    <arg name="custom_param_file" value="$(arg custom_param_file)"/>
+  </include>
+
+</launch>
+

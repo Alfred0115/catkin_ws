@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.5.1-0-g916b5db  Build Version: 1.5.7152.31018
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot name="amr_desc">
+  <link name="base_footprint">
+      <visual>
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+          <geometry>
+              <box size="0.001 0.001 0.001"/>
+          </geometry>
+      </visual>
+  </link>
+
+  <joint name="base_footprint_joint" type="fixed">
+      <!--origin xyz="0 0 0" rpy="0 0 0"/-->
+      <origin xyz="0 0 0.08" rpy="0 0 0"/>   <!--zy 0 0 0.1-->       
+      <parent link="base_footprint"/>
+      <child link="base_link"/>
+  </joint>
+  
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://amr_desc/meshes/base_link.STL" />
+      </geometry>
+    </visual>
+  </link>
+  
+  <link name="rightw_Link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://amr_desc/meshes/rightw_Link.STL" />
+      </geometry>
+    </visual>
+  </link>
+  
+  <joint name="Joint right" type="revolute">
+    <origin xyz="0 -0.32 0" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="rightw_Link" />
+    <axis xyz="0 1 0" />
+    <limit lower="0" upper="0" effort="0" velocity="0" />
+  </joint>
+  
+  <link name="leftw_Link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://amr_desc/meshes/leftw_Link.STL" />
+      </geometry>
+    </visual>
+  </link>
+  
+  <joint name="Joint left" type="revolute">
+    <origin xyz="0 0.32 0" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="leftw_Link" />
+    <axis xyz="0 -1 0" />
+    <limit lower="0" upper="0" effort="0" velocity="0" />
+  </joint>
+  
+  <link name="amr_laser">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://amr_desc/meshes/radiar_Link.STL" />
+      </geometry>
+    </visual>
+  </link>
+  
+  <joint name="joint_laser" type="fixed">
+    <!--origin xyz="0.5 0 0.2" rpy="0 0 0" /-->  
+    <origin xyz="0.452 0 0.16" rpy="0 0 0" />   <!--zy 0.67 0 0.2-->
+    <parent link="base_link" />
+    <child link="amr_laser" />
+    <axis xyz="0 0 0" />
+  </joint>
+  
+  <link name="camera_link">
+    <visual>
+     <origin xyz="0 0 0" rpy="0 0 0" />
+     <geometry>
+       <mesh filename="package://amr_desc/meshes/radiar_Link.STL" />
+     </geometry>
+   </visual>
+  </link>
+ 
+  <!--joint name="joint_camera" type="fixed">
+    <origin xyz="0.72 0 0.22" rpy="0 0.506 0" />
+    <parent link="base_link" />
+    <child link="camera_link" />
+    <axis xyz="0 0 0" />
+  </joint-->
+
+  <joint name="joint_camera" type="fixed">
+   <origin xyz="0.47 0.0 0.215" rpy="0 0 0" />
+   <parent link="base_link" />
+   <child link="camera_link" />
+   <axis xyz="0 0 0" />
+  </joint>
+
+  <link name="intel_camera_link">
+    <visual>
+     <origin xyz="0 0 0" rpy="0 0 0" />
+     <geometry>
+       <mesh filename="package://amr_desc/meshes/radiar_Link.STL" />
+     </geometry>
+   </visual>
+  </link>
+
+  <joint name="joint_intel_camera" type="fixed">
+   <origin xyz="0.48 0.0 0.2" rpy="0 0 0" />
+   <parent link="base_link" />
+   <child link="intel_camera_link" />
+   <axis xyz="0 0 0" />
+  </joint>
+
+  <link name="dcamera_Link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://amr_desc/meshes/dcamera_Link.STL" />
+      </geometry>
+    </visual>
+  </link>
+  
+  <joint name="joint_dcamera" type="fixed">
+    <origin xyz="0.452 0 0.13" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="dcamera_Link" />
+    <axis xyz="0 0 0" />
+  </joint>
+  
+  <link name="ucamera_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://amr_desc/meshes/ucamera_Link.STL" />
+      </geometry>
+    </visual>
+  </link>
+  
+  <joint name="joint_ucamera" type="fixed">
+    <!--origin xyz="0.254735226280623 0 1.17570215806429" rpy="0 -0.523598775598294 0" /-->
+    <origin xyz="0.254735226280623 0 1.17570215806429" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="ucamera_link" />
+    <axis xyz="0 0 0" />
+  </joint>
+  
+  <link name="amr_imu">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://amr_desc/meshes/radiar_Link.STL" />
+      </geometry>
+    </visual>
+  </link>
+  
+  <joint name="joint_imu" type="fixed">
+    <origin xyz="0 -0.07 0.4 " rpy="-1.5707963 0 0" />
+    <parent link="base_link" />
+    <child link="amr_imu" />
+    <axis xyz="0 0 0" />
+  </joint>
+</robot>
+  
+  

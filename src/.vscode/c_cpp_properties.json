@@ -1,0 +1,63 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "",
+        "limitSymbolsToIncludedHeaders": true
+      },
+      "includePath": [
+        "/home/zy/carto_workspace/cartographer_detailed_comments_ws/install_isolated/include/**",
+        "/home/zy/pro_workspace/devel/include/**",
+        "/home/zy/turtlebot_ws/devel/include/**",
+        "/opt/ros/kinetic/include/**",
+        "/home/zy/Documents/catkin_ws/src/navigation/amcl/include/**",
+        "/home/zy/Documents/catkin_ws/src/amr_devices/amr_imu/include/**",
+        "/home/zy/Documents/catkin_ws/src/amr_msgs_srv/include/**",
+        "/home/zy/Documents/catkin_ws/src/amr_voice_system/include/**",
+        "/home/zy/Documents/catkin_ws/src/apriltag_ros/apriltag_ros/include/**",
+        "/home/zy/Documents/catkin_ws/src/ros_astra_camera/include/**",
+        "/home/zy/Documents/catkin_ws/src/navigation/base_local_planner/include/**",
+        "/home/zy/pro_workspace/src/board_pose/include/**",
+        "/home/zy/Documents/catkin_ws/src/navigation/carrot_planner/include/**",
+        "/home/zy/Documents/catkin_ws/src/navigation/clear_costmap_recovery/include/**",
+        "/home/zy/Documents/catkin_ws/src/navigation/costmap_2d/include/**",
+        "/home/zy/pro_workspace/src/costmap_converter-master/include/**",
+        "/home/zy/pro_workspace/src/costmap_prohibition_layer/include/**",
+        "/home/zy/Documents/catkin_ws/src/depth_image_proc/include/**",
+        "/home/zy/Documents/catkin_ws/src/docking_path_generator/include/**",
+        "/home/zy/Documents/catkin_ws/src/navigation/dwa_local_planner/include/**",
+        "/home/zy/Documents/catkin_ws/src/navigation/global_planner/include/**",
+        "/home/zy/turtlebot_ws/src/imu_master/include/**",
+        "/home/zy/turtlebot_ws/src/kobuki/kobuki_auto_docking/include/**",
+        "/home/zy/turtlebot_ws/src/kobuki/kobuki_bumper2pc/include/**",
+        "/home/zy/turtlebot_ws/src/kobuki/kobuki_controller_tutorial/include/**",
+        "/home/zy/turtlebot_ws/src/kobuki/kobuki_keyop/include/**",
+        "/home/zy/turtlebot_ws/src/kobuki/kobuki_node/include/**",
+        "/home/zy/turtlebot_ws/src/kobuki/kobuki_random_walker/include/**",
+        "/home/zy/turtlebot_ws/src/kobuki/kobuki_safety_controller/include/**",
+        "/home/zy/Documents/catkin_ws/src/navigation/map_server/include/**",
+        "/home/zy/Documents/catkin_ws/src/navigation/move_base/include/**",
+        "/home/zy/Documents/catkin_ws/src/navigation/move_slow_and_clear/include/**",
+        "/home/zy/Documents/catkin_ws/src/navigation/nav_core/include/**",
+        "/home/zy/Documents/catkin_ws/src/navigation/navfn/include/**",
+        "/home/zy/pro_workspace/src/pepperl_fuchs_r2000/include/**",
+        "/home/zy/Documents/catkin_ws/src/realsense2_camera/include/**",
+        "/home/zy/pro_workspace/src/rf2o_laser_odometry/include/**",
+        "/home/zy/Documents/catkin_ws/src/robot_pose_ekf/include/**",
+        "/home/zy/Documents/catkin_ws/src/amr_devices/robot_serials/include/**",
+        "/home/zy/Documents/catkin_ws/src/navigation/rotate_recovery/include/**",
+        "/home/zy/Documents/catkin_ws/src/kelidriver/include/**",
+        "/home/zy/turtlebot_ws/src/startup/include/**",
+        "/home/zy/pro_workspace/src/statemachine/include/**",
+        "/home/zy/Documents/catkin_ws/src/navigation/teb_local_planner/include/**",
+        "/home/zy/pro_workspace/src/test2/include/**",
+        "/home/zy/pro_workspace/src/turtlebot_apps/turtlebot_actions/include/**",
+        "/home/zy/Documents/catkin_ws/src/navigation/twist_recovery/include/**",
+        "/home/zy/Documents/catkin_ws/src/navigation/voxel_grid/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS"
+    }
+  ],
+  "version": 4
+}

@@ -1,0 +1,16 @@
+<launch>
+    <arg name="voice_pkg" default="/home/zy/amr_voice" />
+    <node name="amr_play_voice_node" pkg="amr_voice_system" type="amr_play_voice_node" output="screen" >
+        <param name="start_voice" value="$(arg voice_pkg)/start.wav" />
+        <param name="errorStatus00" value="$(arg voice_pkg)/errorStatus00.wav" />
+        <param name="errorStatus01" value="$(arg voice_pkg)/errorStatus01.wav" />
+        <param name="errorStatus02" value="$(arg voice_pkg)/errorStatus02.wav" />
+        <param name="warnningStatus00" value="$(arg voice_pkg)/warnningStatus00.wav" />
+        <param name="warnningStatus01" value="$(arg voice_pkg)/warnningStatus01.wav" />
+        <param name="warnningStatus02" value="$(arg voice_pkg)/warnningStatus02.wav" />
+        <param name="warnningStatus03" value="$(arg voice_pkg)/warnningStatus03.wav" />
+        <param name="warnningStatus04" value="$(arg voice_pkg)/warnningStatus04.wav" />
+        <param name="warnningStatus05" value="$(arg voice_pkg)/warnningStatus05.wav" />
+    
+    </node>
+</launch>
